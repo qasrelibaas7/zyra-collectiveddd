@@ -6,6 +6,7 @@ const firebaseConfig = {
     messagingSenderId: "410241064931",
     appId: "1:410241064931:web:a9dcb7f9401d22b2a30ad6"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
@@ -72,23 +73,47 @@ function toggleSidebar(f) {
 
 function toggleQR(show) { document.getElementById('qr-section').classList.toggle('hidden', !show); }
 
+// --- UPGRADED AUTH START ---
 function handleAuth() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(err => alert(err.message));
+    auth.signInWithPopup(provider)
+    .then((result) => {
+        console.log("Login Success");
+    })
+    .catch(err => {
+        if(err.code === 'auth/popup-closed-by-user') {
+            alert("Login window closed. Please try again.");
+        } else {
+            alert("Error: " + err.message);
+        }
+    });
 }
 
 auth.onAuthStateChanged(u => {
     user = u;
+    const topAuth = document.getElementById('top-auth');
+    const authBtn = document.getElementById('auth-btn');
+    
     if(u) {
-        document.getElementById('top-auth').innerHTML = `<img src="${u.photoURL}" class="w-8 h-8 rounded-full border border-gold">`;
-        document.getElementById('u-img').src = u.photoURL;
-        document.getElementById('u-name').innerText = u.displayName;
-        document.getElementById('u-email').innerText = u.email;
-        document.getElementById('cust-name').value = u.displayName;
-        document.getElementById('auth-btn').innerText = "Sign Out";
-        document.getElementById('auth-btn').onclick = () => auth.signOut().then(() => location.reload());
+        if(topAuth) topAuth.innerHTML = `<img src="${u.photoURL}" class="w-8 h-8 rounded-full border border-gold">`;
+        if(document.getElementById('u-img')) document.getElementById('u-img').src = u.photoURL;
+        if(document.getElementById('u-name')) document.getElementById('u-name').innerText = u.displayName;
+        if(document.getElementById('u-email')) document.getElementById('u-email').innerText = u.email;
+        if(document.getElementById('cust-name')) document.getElementById('cust-name').value = u.displayName;
+        
+        if(authBtn) {
+            authBtn.innerText = "Sign Out";
+            authBtn.onclick = () => auth.signOut().then(() => location.reload());
+        }
+    } else {
+        if(topAuth) topAuth.innerHTML = `<button class="text-[10px] font-bold border-b-2 border-gold uppercase">Login</button>`;
+        if(authBtn) {
+            authBtn.innerText = "Login with Google";
+            authBtn.onclick = handleAuth;
+        }
     }
 });
+// --- UPGRADED AUTH END ---
 
 function openCat(name) {
     showSection('product-view');
