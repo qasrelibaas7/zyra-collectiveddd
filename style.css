@@ -1,0 +1,59 @@
+:root { 
+    --gold: #D4AF37; 
+}
+
+body { 
+    font-family: 'Montserrat', sans-serif; 
+    background: #fff; 
+    color: #1a1a1a; 
+    margin: 0; 
+    overflow-x: hidden; 
+}
+
+.hero-title { 
+    font-family: 'Playfair Display', serif; 
+}
+
+.hidden { 
+    display: none !important; 
+}
+
+.sidebar { 
+    transition: 0.4s; 
+    transform: translateX(-100%); 
+    z-index: 2000; 
+    position: fixed; 
+    inset: 0; 
+    width: 280px; 
+    background: white; 
+    border-right: 1px solid #eee; 
+}
+
+.sidebar.active { 
+    transform: translateX(0); 
+}
+
+.overlay { 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0,0,0,0.4); 
+    z-index: 1500; 
+    display: none; 
+}
+
+.overlay.active { 
+    display: block; 
+}
+
+.app-section { 
+    min-height: 80vh; 
+}
+
+/* Custom Gold Text Utility */
+.text-gold {
+    color: var(--gold);
+}
+.border-gold {
+    border-color: var(--gold);
+}
+
