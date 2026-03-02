@@ -35,7 +35,6 @@
         <p onclick="showSection('faq-page')" class="cursor-pointer hover:text-gold transition">FAQs & Help</p>
         <p onclick="showSection('policy-page', 'Return')" class="cursor-pointer hover:text-gold transition">Return Policy</p>
         <p onclick="showSection('policy-page', 'Privacy')" class="cursor-pointer hover:text-gold transition">Privacy Policy</p>
-        
         <div class="pt-10 flex space-x-6 text-2xl text-gold">
             <a href="https://www.instagram.com/um3rx70" target="_blank"><i class="fab fa-instagram"></i></a>
             <a href="https://wa.me/917385009275" target="_blank"><i class="fab fa-whatsapp"></i></a>
@@ -54,17 +53,6 @@
             </div>
         </div>
         <div id="category-grid" class="grid grid-cols-2 gap-4"></div>
-        <footer class="mt-16 p-10 bg-white border-t text-center space-y-6">
-            <h2 class="hero-title text-gold text-2xl uppercase tracking-tighter">Zyra Collective</h2>
-            <div class="flex justify-center space-x-8 text-xl text-gray-400">
-                <a href="https://www.instagram.com/um3rx70" target="_blank"><i class="fab fa-instagram hover:text-[#E1306C] transition-colors"></i></a>
-                <a href="https://wa.me/917385009275" target="_blank"><i class="fab fa-whatsapp hover:text-[#25D366] transition-colors"></i></a>
-            </div>
-            <div class="text-[9px] uppercase tracking-[3px] opacity-40 leading-relaxed">
-                <p>Premium Modest Wear Boutique</p>
-                <p>© 2026 All Rights Reserved</p>
-            </div>
-        </footer>
     </div>
 
     <div id="product-view" class="app-section hidden p-5">
@@ -106,12 +94,8 @@
         <h2 class="hero-title text-2xl mb-6 text-gold uppercase">FAQs</h2>
         <div class="space-y-4">
             <div class="p-4 border rounded-2xl bg-gray-50">
-                <p class="font-bold text-sm">Delivery kitne din mein hogi?</p>
-                <p class="text-xs opacity-60 mt-2">Normal delivery 5-7 working days mein hoti hai pure India mein.</p>
-            </div>
-            <div class="p-4 border rounded-2xl bg-gray-50">
-                <p class="font-bold text-sm">Kya COD available hai?</p>
-                <p class="text-xs opacity-60 mt-2">Haan, hum pure India mein Cash on Delivery (COD) provide karte hain.</p>
+                <p class="font-bold text-sm">Delivery kab hogi?</p>
+                <p class="text-xs opacity-60 mt-2">Hum 5-7 working days mein delivery complete kar dete hain.</p>
             </div>
             <div class="p-4 border rounded-2xl bg-gray-50">
                 <p class="font-bold text-sm">Quality kaisi hogi?</p>
@@ -139,10 +123,6 @@
             <p id="u-email" class="text-[10px] opacity-50"></p>
         </div>
         <div class="space-y-4">
-            <div onclick="showSection('orders-page')" class="p-5 border rounded-2xl flex justify-between cursor-pointer items-center hover:bg-gray-50 transition">
-                <span class="text-xs font-bold uppercase tracking-widest">Order History</span> 
-                <i class="fas fa-chevron-right text-gold"></i>
-            </div>
             <button id="auth-btn" onclick="handleAuth()" class="w-full py-5 bg-black text-white rounded-2xl font-bold uppercase tracking-[2px]">Login with Google</button>
         </div>
     </div>
@@ -150,13 +130,13 @@
 
 <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-around items-center z-[2000] shadow-xl">
     <div onclick="showSection('home-page')" id="nav-home" class="text-center cursor-pointer text-gold">
-        <i class="fas fa-home text-xl"></i><p class="text-[8px] font-bold mt-1">HOME</p>
+        <i class="fas fa-home text-xl"></i><p class="text-[8px] font-bold mt-1 uppercase">Home</p>
     </div>
     <div onclick="showSection('orders-page')" id="nav-orders" class="text-center cursor-pointer text-gray-400">
-        <i class="fas fa-shopping-bag text-xl"></i><p class="text-[8px] font-bold mt-1">ORDERS</p>
+        <i class="fas fa-shopping-bag text-xl"></i><p class="text-[8px] font-bold mt-1 uppercase">Orders</p>
     </div>
     <div onclick="showSection('profile-page')" id="nav-profile" class="text-center cursor-pointer text-gray-400">
-        <i class="fas fa-user-circle text-xl"></i><p class="text-[8px] font-bold mt-1">PROFILE</p>
+        <i class="fas fa-user-circle text-xl"></i><p class="text-[8px] font-bold mt-1 uppercase">Profile</p>
     </div>
 </div>
 
