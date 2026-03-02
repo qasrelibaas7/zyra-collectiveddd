@@ -13,39 +13,45 @@ const auth = firebase.auth();
 let user = null;
 let currentItem = null;
 
-// RESTORED: All 7 Products per Category
+// ALL 7 PRODUCTS PER CATEGORY RESTORED
 const productsData = {
     "Burkha": [
-        { name: "Classic Nida", price: "499" }, { name: "Lace Luxe", price: "499" }, 
-        { name: "Stone Work", price: "499" }, { name: "Premium Dubai", price: "499" },
-        { name: "Daily Wear", price: "499" }, { name: "Party Wear", price: "499" }, { name: "Zari Work", price: "499" }
+        { name: "Classic Nida", price: "499" }, { name: "Lace Luxe", price: "499" }, { name: "Stone Work", price: "499" },
+        { name: "Premium Dubai", price: "499" }, { name: "Daily Wear", price: "499" }, { name: "Party Wear", price: "499" }, { name: "Zari Work", price: "499" }
     ],
     "Abaya": [
-        { name: "A-Line Cut", price: "499" }, { name: "Kimono Style", price: "499" }, 
-        { name: "Open Front", price: "499" }, { name: "Butterfly", price: "499" },
-        { name: "Coat Style", price: "499" }, { name: "Classic Black", price: "499" }, { name: "Modest Fit", price: "499" }
+        { name: "A-Line Cut", price: "499" }, { name: "Kimono Style", price: "499" }, { name: "Open Front", price: "499" },
+        { name: "Butterfly", price: "499" }, { name: "Coat Style", price: "499" }, { name: "Classic Black", price: "499" }, { name: "Modest Fit", price: "499" }
     ],
     "Hijab": [
-        { name: "Chiffon Soft", price: "499" }, { name: "Premium Jersey", price: "499" },
-        { name: "Cotton Silk", price: "499" }, { name: "Crinkle", price: "499" },
-        { name: "Satin Silk", price: "499" }, { name: "Georgette", price: "499" }, { name: "Modal", price: "499" }
+        { name: "Chiffon Soft", price: "499" }, { name: "Premium Jersey", price: "499" }, { name: "Cotton Silk", price: "499" },
+        { name: "Crinkle", price: "499" }, { name: "Satin Silk", price: "499" }, { name: "Georgette", price: "499" }, { name: "Modal", price: "499" }
     ],
     "Kurta": [
-        { name: "Floral Print", price: "499" }, { name: "Casual Linen", price: "499" },
-        { name: "Cotton Blend", price: "499" }, { name: "Embroidered", price: "499" },
-        { name: "Straight Cut", price: "499" }, { name: "Anarkali", price: "499" }, { name: "Office Wear", price: "499" }
+        { name: "Floral Print", price: "499" }, { name: "Casual Linen", price: "499" }, { name: "Cotton Blend", price: "499" },
+        { name: "Embroidered", price: "499" }, { name: "Straight Cut", price: "499" }, { name: "Anarkali", price: "499" }, { name: "Office Wear", price: "499" }
     ],
     "Prayer Mat": [
-        { name: "Turkish Padded", price: "499" }, { name: "Velvet Mat", price: "499" },
-        { name: "Foam Base", price: "499" }, { name: "Travel Foldable", price: "499" },
-        { name: "Sajadah Lux", price: "499" }, { name: "Kids Mat", price: "499" }, { name: "Classic Red", price: "499" }
+        { name: "Turkish Padded", price: "499" }, { name: "Velvet Mat", price: "499" }, { name: "Foam Base", price: "499" },
+        { name: "Travel Foldable", price: "499" }, { name: "Sajadah Lux", price: "499" }, { name: "Kids Mat", price: "499" }, { name: "Classic Red", price: "499" }
     ],
     "Attar": [
-        { name: "Oud Al-Layl", price: "499" }, { name: "White Musk", price: "499" },
-        { name: "Rose Sandal", price: "499" }, { name: "Majmua", price: "499" },
-        { name: "Amber", price: "499" }, { name: "Jasmine", price: "499" }, { name: "Mogra", price: "499" }
+        { name: "Oud Al-Layl", price: "499" }, { name: "White Musk", price: "499" }, { name: "Rose Sandal", price: "499" },
+        { name: "Majmua", price: "499" }, { name: "Amber", price: "499" }, { name: "Jasmine", price: "499" }, { name: "Mogra", price: "499" }
     ]
 };
+
+// AUTO SLIDER LOGIC
+let slideIndex = 0;
+function startSlider() {
+    const slider = document.getElementById('slider-container');
+    if(!slider) return;
+    setInterval(() => {
+        slideIndex++;
+        if(slideIndex >= 3) slideIndex = 0;
+        slider.style.transform = `translateX(-${(slideIndex * 100) / 3}%)`;
+    }, 3000);
+}
 
 function initHome() {
     const grid = document.getElementById('category-grid');
@@ -62,18 +68,12 @@ function initHome() {
 }
 
 function showSection(id, type) {
-    if((id === 'checkout-page' || id === 'orders-page') && !user) { 
-        handleAuth(); return; 
-    }
+    if((id === 'checkout-page' || id === 'orders-page') && !user) { handleAuth(); return; }
     document.querySelectorAll('.app-section').forEach(s => s.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
-    
-    if(id === 'policy-page') {
-        document.getElementById('pol-title').innerText = type + " Policy";
-        document.getElementById('pol-body').innerHTML = type === 'Return' ? "7-Days Return Policy for unused items." : "Your data is safe with Zyra Collective.";
-    }
     if(id === 'orders-page') fetchOrders();
     window.scrollTo(0,0);
+    toggleSidebar(false);
 }
 
 function handleAuth() {
@@ -168,5 +168,8 @@ function toggleSidebar(f) {
 
 function toggleQR(show) { document.getElementById('qr-section').classList.toggle('hidden', !show); }
 
-initHome();
-            
+// INIT APP
+window.onload = () => {
+    initHome();
+    startSlider();
+};
