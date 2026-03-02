@@ -1,190 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Zyra Collective</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { 
-      getAuth, 
-      createUserWithEmailAndPassword, 
-      signInWithEmailAndPassword, 
-      signOut, 
-      onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-    import { 
-      getFirestore, 
-      setDoc, 
-      doc, 
-      collection, 
-      getDocs 
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    // ✅ REAL FIREBASE CONFIG
-    const firebaseConfig = {
-      apiKey: "AIzaSyDynR_WS_pzW8FpwzdmBCJFdB1DFjrMJEM",
-      authDomain: "zyra-collective.firebaseapp.com",
-      projectId: "zyra-collective",
-      storageBucket: "zyra-collective.firebasestorage.app",
-      messagingSenderId: "434398754546",
-      appId: "1:434398754546:web:11275035939321b7a7426b"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth();
-    const db = getFirestore(app);
-
-    // SIGNUP
-    window.signup = async function() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      try {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, "users", userCred.user.uid), {
-          email: email,
-          role: "user"
-        });
-        alert("Signup Successful");
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-
-    // LOGIN
-    window.login = async function() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert("Login Successful");
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-
-    // LOGOUT
-    window.logout = async function() {
-      await signOut(auth);
-      alert("Logged Out");
-    }
-
-    // LOAD PRODUCTS
-    async function loadProducts() {
-      const querySnapshot = await getDocs(collection(db, "products"));
-      const container = document.getElementById("productsContainer");
-      container.innerHTML = "";
-
-      querySnapshot.forEach((doc) => {
-        const product = doc.data();
-
-        container.innerHTML += `
-          <div class="product">
-            <img src="${product.imageURL}" width="200"><br>
-            <h3>${product.name}</h3>
-            <p>${product.description}</p>
-            <p>₹${product.price}</p>
-            <button onclick='addToCart(${JSON.stringify(product)})'>Add to Cart</button>
-          </div>
-        `;
-      });
-    }
-async function addToCart(product) {
-  const user = auth.currentUser;
-
-  if (!user) {
-    alert("Please login first");
-    return;
-  }
-
-  await setDoc(doc(db, "cart", user.uid + "_" + product.name), {
-    userId: user.uid,
-    name: product.name,
-    price: product.price,
-    imageURL: product.imageURL,
-    quantity: 1
-  });
-
-  alert("Added to Cart 🛒");
-}
-    // AUTH STATE
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("userSection").style.display = "block";
-        document.getElementById("authSection").style.display = "none";
-        document.getElementById("userEmail").innerText = user.email;
-
-        loadProducts(); // 🔥 Products load after login
-      } else {
-        document.getElementById("userSection").style.display = "none";
-        document.getElementById("authSection").style.display = "block";
-      }
-    });
-
-  </script>
-
-  <style>
-    body { 
-      font-family: Arial; 
-      text-align:center; 
-      background:#111; 
-      color:white; 
-    }
-
-    input { 
-      padding:10px; 
-      margin:5px; 
-      border-radius:5px;
-      border:none;
-    }
-
-    button { 
-      padding:10px 20px; 
-      margin:5px; 
-      background:#ff004f; 
-      color:white; 
-      border:none; 
-      border-radius:5px;
-      cursor:pointer;
-    }
-
-    .product { 
-      background:#222; 
-      padding:15px; 
-      margin:10px; 
-      border-radius:10px; 
-    }
-
-    img {
-      border-radius:10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zyra Collective | Luxury Boutique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
+<body class="pb-24">
 
-<body>
+<nav class="bg-white border-b p-4 flex justify-between items-center sticky top-0 z-[1000]">
+    <div class="flex items-center space-x-4">
+        <i onclick="toggleSidebar(true)" class="fas fa-bars text-xl cursor-pointer"></i>
+        <h1 class="text-xl hero-title font-bold text-gold uppercase tracking-tighter">Zyra</h1>
+    </div>
+    <div id="top-auth" onclick="showSection('profile-page')">
+        <button class="text-[10px] font-bold border-b-2 border-gold uppercase">Login</button>
+    </div>
+</nav>
 
-  <h1>Zyra Collective 🖤</h1>
+<div id="sidebar" class="sidebar p-6 shadow-2xl">
+    <div class="flex justify-between items-center mb-10 border-b pb-4">
+        <h2 class="hero-title text-gold text-xl">Zyra Menu</h2>
+        <i onclick="toggleSidebar(false)" class="fas fa-times text-xl cursor-pointer"></i>
+    </div>
+    <div class="space-y-6 text-xs font-bold uppercase tracking-widest">
+        <p onclick="showSection('home-page')" class="cursor-pointer hover:text-gold transition">Home Collection</p>
+        <p onclick="showSection('orders-page')" class="cursor-pointer hover:text-gold transition">My Orders</p>
+        <p onclick="showSection('faq-page')" class="cursor-pointer hover:text-gold transition">FAQs & Help</p>
+        <p onclick="showSection('policy-page', 'Return')" class="cursor-pointer hover:text-gold transition">Return Policy</p>
+        <p onclick="showSection('policy-page', 'Privacy')" class="cursor-pointer hover:text-gold transition">Privacy Policy</p>
+        
+        <div class="pt-10 flex space-x-6 text-2xl text-gold">
+            <a href="https://www.instagram.com/um3rx70" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/917385009275" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </div>
+</div>
+<div id="overlay" class="overlay" onclick="toggleSidebar(false)"></div>
 
-  <div id="authSection">
-    <h3>Login / Signup</h3>
-    <input type="email" id="email" placeholder="Email"><br>
-    <input type="password" id="password" placeholder="Password"><br>
-    <button onclick="signup()">Signup</button>
-    <button onclick="login()">Login</button>
-  </div>
+<main id="main-content">
+    <div id="home-page" class="app-section p-4">
+        <div class="relative h-56 bg-gray-100 rounded-[40px] overflow-hidden mb-8 shadow-lg">
+            <div id="slider-container" class="flex transition-transform duration-700 ease-in-out h-full" style="width: 300%;">
+                <img src="images/hero1.png" class="w-1/3 h-full object-cover" onerror="this.src='https://via.placeholder.com/800x400?text=Premium+Collection'">
+                <img src="images/hero2.png" class="w-1/3 h-full object-cover" onerror="this.src='https://via.placeholder.com/800x400?text=New+Arrivals'">
+                <img src="images/hero3.png" class="w-1/3 h-full object-cover" onerror="this.src='https://via.placeholder.com/800x400?text=Luxury+Wear'">
+            </div>
+        </div>
+        <div id="category-grid" class="grid grid-cols-2 gap-4"></div>
+        <footer class="mt-16 p-10 bg-white border-t text-center space-y-6">
+            <h2 class="hero-title text-gold text-2xl uppercase tracking-tighter">Zyra Collective</h2>
+            <div class="flex justify-center space-x-8 text-xl text-gray-400">
+                <a href="https://www.instagram.com/um3rx70" target="_blank"><i class="fab fa-instagram hover:text-[#E1306C] transition-colors"></i></a>
+                <a href="https://wa.me/917385009275" target="_blank"><i class="fab fa-whatsapp hover:text-[#25D366] transition-colors"></i></a>
+            </div>
+            <div class="text-[9px] uppercase tracking-[3px] opacity-40 leading-relaxed">
+                <p>Premium Modest Wear Boutique</p>
+                <p>© 2026 All Rights Reserved</p>
+            </div>
+        </footer>
+    </div>
 
-  <div id="userSection" style="display:none;">
-    <h3>Welcome <span id="userEmail"></span></h3>
-    <button onclick="logout()">Logout</button>
-  <button onclick="loadCart()">View Cart 🛒</button>
-    <h2>Our Products</h2>
-    <div id="productsContainer"></div>
-    <h2>Your Cart</h2>
-<div id="cartContainer"></div>
-  </div>
+    <div id="product-view" class="app-section hidden p-5">
+        <div class="flex items-center space-x-4 mb-6" onclick="showSection('home-page')">
+            <i class="fas fa-arrow-left cursor-pointer"></i> <h2 id="cat-title" class="hero-title text-xl uppercase"></h2>
+        </div>
+        <div id="prod-list" class="grid gap-8"></div>
+    </div>
 
+    <div id="checkout-page" class="app-section hidden p-6">
+        <h2 class="hero-title text-2xl mb-6">Order Details</h2>
+        <div id="item-summary" class="bg-gray-50 p-6 rounded-3xl mb-6 border border-gold/10"></div>
+        <form id="order-form" class="space-y-4">
+            <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 border rounded-2xl" required>
+            <input type="tel" id="cust-phone" placeholder="WhatsApp Number" class="w-full p-4 border rounded-2xl" required>
+            <textarea id="cust-address" placeholder="Full Address with Pincode" class="w-full p-4 border rounded-2xl h-24" required></textarea>
+            
+            <div class="p-4 bg-gray-50 rounded-2xl border">
+                <p class="text-[10px] font-bold uppercase mb-4 opacity-50">Payment Method</p>
+                <div class="space-y-3">
+                    <label class="flex items-center space-x-3 p-3 bg-white rounded-xl border cursor-pointer">
+                        <input type="radio" name="pay-method" value="COD" checked onchange="toggleQR(false)">
+                        <span class="text-xs font-bold">Cash on Delivery (COD)</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 bg-white rounded-xl border cursor-pointer">
+                        <input type="radio" name="pay-method" value="Online" onchange="toggleQR(true)">
+                        <span class="text-xs font-bold">Pay via QR / UPI</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="qr-section" class="hidden text-center p-6 bg-white border-2 border-dashed border-gold rounded-3xl">
+                <img src="images/paymentqr.png" class="w-48 mx-auto rounded-lg shadow-md" onerror="this.src='https://via.placeholder.com/200?text=Scan+to+Pay'">
+                <p class="text-[9px] mt-4 opacity-50 uppercase font-bold">Screenshot le kar WhatsApp karein</p>
+            </div>
+
+            <button type="submit" id="order-btn" class="w-full py-5 bg-black text-white rounded-2xl font-bold uppercase tracking-[3px]">Place Order</button>
+        </form>
+    </div>
+
+    <div id="faq-page" class="app-section hidden p-6">...</div>
+    <div id="policy-page" class="app-section hidden p-6">...</div>
+    <div id="orders-page" class="app-section hidden p-5">...</div>
+    <div id="profile-page" class="app-section hidden p-5 text-center">...</div>
+</main>
+
+<div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-around items-center z-[2000] shadow-xl">
+    <div onclick="showSection('home-page')" id="nav-home" class="text-center cursor-pointer text-gold">
+        <i class="fas fa-home text-xl"></i><p class="text-[8px] font-bold mt-1">HOME</p>
+    </div>
+    <div onclick="showSection('orders-page')" id="nav-orders" class="text-center cursor-pointer text-gray-400">
+        <i class="fas fa-shopping-bag text-xl"></i><p class="text-[8px] font-bold mt-1">ORDERS</p>
+    </div>
+    <div onclick="showSection('profile-page')" id="nav-profile" class="text-center cursor-pointer text-gray-400">
+        <i class="fas fa-user-circle text-xl"></i><p class="text-[8px] font-bold mt-1">PROFILE</p>
+    </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
