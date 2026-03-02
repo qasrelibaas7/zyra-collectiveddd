@@ -81,7 +81,6 @@
             <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-4 border rounded-2xl" required>
             <input type="tel" id="cust-phone" placeholder="WhatsApp Number" class="w-full p-4 border rounded-2xl" required>
             <textarea id="cust-address" placeholder="Full Address with Pincode" class="w-full p-4 border rounded-2xl h-24" required></textarea>
-            
             <div class="p-4 bg-gray-50 rounded-2xl border">
                 <p class="text-[10px] font-bold uppercase mb-4 opacity-50">Payment Method</p>
                 <div class="space-y-3">
@@ -95,20 +94,58 @@
                     </label>
                 </div>
             </div>
-
             <div id="qr-section" class="hidden text-center p-6 bg-white border-2 border-dashed border-gold rounded-3xl">
                 <img src="images/paymentqr.png" class="w-48 mx-auto rounded-lg shadow-md" onerror="this.src='https://via.placeholder.com/200?text=Scan+to+Pay'">
                 <p class="text-[9px] mt-4 opacity-50 uppercase font-bold">Screenshot le kar WhatsApp karein</p>
             </div>
-
             <button type="submit" id="order-btn" class="w-full py-5 bg-black text-white rounded-2xl font-bold uppercase tracking-[3px]">Place Order</button>
         </form>
     </div>
 
-    <div id="faq-page" class="app-section hidden p-6">...</div>
-    <div id="policy-page" class="app-section hidden p-6">...</div>
-    <div id="orders-page" class="app-section hidden p-5">...</div>
-    <div id="profile-page" class="app-section hidden p-5 text-center">...</div>
+    <div id="faq-page" class="app-section hidden p-6">
+        <h2 class="hero-title text-2xl mb-6 text-gold uppercase">FAQs</h2>
+        <div class="space-y-4">
+            <div class="p-4 border rounded-2xl bg-gray-50">
+                <p class="font-bold text-sm">Delivery kitne din mein hogi?</p>
+                <p class="text-xs opacity-60 mt-2">Normal delivery 5-7 working days mein hoti hai pure India mein.</p>
+            </div>
+            <div class="p-4 border rounded-2xl bg-gray-50">
+                <p class="font-bold text-sm">Kya COD available hai?</p>
+                <p class="text-xs opacity-60 mt-2">Haan, hum pure India mein Cash on Delivery (COD) provide karte hain.</p>
+            </div>
+            <div class="p-4 border rounded-2xl bg-gray-50">
+                <p class="font-bold text-sm">Quality kaisi hogi?</p>
+                <p class="text-xs opacity-60 mt-2">Zyra Collective sirf premium luxury fabric hi use karta hai.</p>
+            </div>
+        </div>
+        <button onclick="showSection('home-page')" class="w-full mt-10 py-4 bg-black text-white rounded-xl uppercase font-bold text-xs">Back to Home</button>
+    </div>
+
+    <div id="policy-page" class="app-section hidden p-6">
+        <h2 id="pol-title" class="hero-title text-2xl mb-4 text-gold uppercase"></h2>
+        <div id="pol-body" class="bg-gray-50 p-6 rounded-2xl text-xs border leading-relaxed opacity-70"></div>
+        <button onclick="showSection('home-page')" class="w-full mt-6 py-4 bg-black text-white rounded-xl uppercase font-bold">Back</button>
+    </div>
+
+    <div id="orders-page" class="app-section hidden p-5">
+        <h2 class="hero-title text-2xl mb-6 text-gold uppercase">My Orders</h2>
+        <div id="order-list" class="space-y-4"></div>
+    </div>
+
+    <div id="profile-page" class="app-section hidden p-5 text-center">
+        <div id="user-info" class="bg-gray-50 p-10 rounded-[40px] border mb-6">
+            <img id="u-img" src="https://via.placeholder.com/100" class="w-20 h-20 rounded-full mx-auto border-4 border-white shadow-xl mb-4">
+            <h3 id="u-name" class="font-bold text-xl uppercase">Guest User</h3>
+            <p id="u-email" class="text-[10px] opacity-50"></p>
+        </div>
+        <div class="space-y-4">
+            <div onclick="showSection('orders-page')" class="p-5 border rounded-2xl flex justify-between cursor-pointer items-center hover:bg-gray-50 transition">
+                <span class="text-xs font-bold uppercase tracking-widest">Order History</span> 
+                <i class="fas fa-chevron-right text-gold"></i>
+            </div>
+            <button id="auth-btn" onclick="handleAuth()" class="w-full py-5 bg-black text-white rounded-2xl font-bold uppercase tracking-[2px]">Login with Google</button>
+        </div>
+    </div>
 </main>
 
 <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-around items-center z-[2000] shadow-xl">
