@@ -5,40 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zyra Collective | Luxury Modest Wear</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-black text-white overflow-x-hidden">
 
     <header class="fixed top-0 w-full z-50 glass-effect p-4 flex justify-between items-center border-b border-gold/20">
+        <div id="menu-btn" class="text-2xl text-gold cursor-pointer"><i class="fas fa-bars"></i></div>
         <img src="images/logo.png" alt="Zyra Logo" class="h-10">
-        <button id="menu-btn" class="text-gold text-2xl"><i class="fas fa-bars"></i></button>
+        <div id="auth-status" class="text-gold cursor-pointer"><i class="fas fa-user-circle text-2xl"></i></div>
     </header>
 
-    <section class="relative h-screen w-full overflow-hidden" id="hero">
-        <div id="hero-container" class="h-full w-full flex transition-transform duration-700">
-            </div>
+    <section class="relative h-[80vh] w-full overflow-hidden mt-16">
+        <div id="hero-slider" class="h-full w-full">
+            <div class="slide active"><img src="images/hero1.png" class="object-cover w-full h-full"></div>
+            <div class="slide"><img src="images/hero2.png" class="object-cover w-full h-full"></div>
+            <div class="slide"><img src="images/hero3.png" class="object-cover w-full h-full"></div>
+            <div class="slide"><video src="images/video.mp4" autoplay muted loop class="object-cover w-full h-full"></video></div>
+        </div>
+        <div class="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center p-6">
+            <h1 class="text-4xl md:text-6xl font-serif text-gold-glow mb-4">Elegance Redefined</h1>
+            <p class="text-gray-300 tracking-widest uppercase text-sm">Luxury Modest Wear Collective</p>
+        </div>
     </section>
 
-    <main class="p-6 space-y-12 mb-24">
-        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <main class="p-6 pb-32">
+        <div id="product-container" class="space-y-12">
             </div>
     </main>
 
-    <nav class="fixed bottom-0 w-full glass-effect border-t border-gold/20 flex justify-around py-4 z-50">
-        <button onclick="showSection('home')" class="text-gold flex flex-col items-center"><i class="fas fa-home"></i><span class="text-xs">Home</span></button>
-        <button onclick="showSection('orders')" class="text-gray-400 flex flex-col items-center"><i class="fas fa-shopping-bag"></i><span class="text-xs">Orders</span></button>
-        <button id="auth-btn" class="text-gray-400 flex flex-col items-center"><i class="fas fa-user"></i><span class="text-xs">Profile</span></button>
+    <nav class="fixed bottom-0 w-full glass-effect border-t border-gold/20 p-4 flex justify-around items-center z-50">
+        <button onclick="showSection('home')" class="nav-item text-gold"><i class="fas fa-home"></i><span class="block text-[10px]">Home</span></button>
+        <button onclick="showSection('orders')" class="nav-item text-gray-400"><i class="fas fa-shopping-bag"></i><span class="block text-[10px]">Orders</span></button>
+        <button onclick="showSection('profile')" class="nav-item text-gray-400"><i class="fas fa-user"></i><span class="block text-[10px]">Profile</span></button>
     </nav>
 
-    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-[60] flex items-center justify-center p-4">
-        <div id="modal-content" class="bg-[#111] border border-gold/30 p-8 rounded-2xl w-full max-w-md relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-gold"><i class="fas fa-times"></i></button>
-            <div id="modal-body"></div>
+    <div id="checkout-modal" class="fixed inset-0 z-[60] hidden bg-black/90 backdrop-blur-md p-6 overflow-y-auto">
+        <div class="max-w-md mx-auto bg-gray-900/50 border border-gold/30 p-8 rounded-2xl glass-effect mt-10">
+            <h2 class="text-2xl text-gold mb-6 font-serif">Secure Checkout</h2>
+            <form id="order-form" action="https://formspree.io/f/xvgzlowq" method="POST">
+                <input type="hidden" name="product_name" id="form-product">
+                <input type="hidden" name="total_price" id="form-price">
+                <input type="text" name="name" placeholder="Full Name" required class="w-full bg-black/50 border border-gold/20 p-3 mb-4 rounded-lg focus:outline-none focus:border-gold">
+                <input type="tel" name="phone" placeholder="WhatsApp Number" required class="w-full bg-black/50 border border-gold/20 p-3 mb-4 rounded-lg focus:outline-none focus:border-gold">
+                <textarea name="address" placeholder="Shipping Address" required class="w-full bg-black/50 border border-gold/20 p-3 mb-4 rounded-lg h-24 focus:outline-none focus:border-gold"></textarea>
+                
+                <div class="mb-6">
+                    <p class="text-gold mb-2">Payment Method:</p>
+                    <label class="block mb-2 cursor-pointer"><input type="radio" name="payment" value="COD" checked> Cash on Delivery (+₹99)</label>
+                    <label class="block cursor-pointer"><input type="radio" name="payment" value="UPI"> UPI / Prepaid</label>
+                </div>
+
+                <div id="upi-qr-container" class="hidden text-center mb-6 p-4 bg-white/5 rounded-xl border border-gold/10">
+                    <img id="upi-qr" src="" alt="QR Code" class="mx-auto w-48 h-48 mb-4 border-2 border-gold rounded-lg">
+                    <p class="text-xs text-gray-400">Scan & Pay to 7385009275@ptsbi</p>
+                    <input type="text" name="transaction_id" placeholder="Enter Transaction ID" class="w-full bg-black p-2 mt-2 border border-gold/20 rounded">
+                </div>
+
+                <button type="submit" class="w-full bg-gold text-black font-bold py-4 rounded-full uppercase tracking-widest hover:bg-yellow-500 transition-all">Confirm Order</button>
+                <button type="button" onclick="closeCheckout()" class="w-full mt-4 text-gray-400 text-sm">Cancel</button>
+            </form>
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
