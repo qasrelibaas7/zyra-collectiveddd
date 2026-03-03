@@ -1,12 +1,139 @@
-:root { --gold: #D4AF37; }
-body { font-family: 'Montserrat', sans-serif; background: #fff; color: #1a1a1a; margin: 0; overflow-x: hidden; }
-.hero-title { font-family: 'Playfair Display', serif; }
+/* ZYRA COLLECTIVE - LUXURY BUNDLE CSS */
+
+:root {
+    --gold: #D4AF37;
+    --dark-bg: #0f0f0f;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --neon-gold: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #ffffff;
+    color: #1a1a1a;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+}
+
 .text-gold { color: var(--gold); }
 .bg-gold { background-color: var(--gold); }
 .border-gold { border-color: var(--gold); }
-.hidden { display: none !important; }
-.sidebar { transition: 0.4s; transform: translateX(-100%); z-index: 2000; position: fixed; inset: 0; width: 280px; background: white; border-right: 1px solid #eee; }
-.sidebar.active { transform: translateX(0); }
-.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1500; display: none; }
-.overlay.active { display: block; }
-.app-section { min-height: 80vh; }
+
+/* --- GLASSMORPHISM & NAV --- */
+nav {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 280px;
+    background: white;
+    z-index: 3000;
+    transform: translateX(-100%);
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-right: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.sidebar.active {
+    transform: translateX(0);
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 2500;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+/* --- HERO SLIDER FIX --- */
+#slider-container {
+    display: flex;
+    will-change: transform;
+}
+
+#slider-container img, 
+#slider-container div {
+    flex-shrink: 0;
+    width: 25%; /* 4 slides (3 images + 1 video) = 100/4 */
+    height: 100%;
+    object-fit: cover;
+}
+
+/* --- CATEGORY CARDS --- */
+#category-grid div {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: 0.3s;
+}
+
+#category-grid div:active {
+    transform: scale(0.95);
+    box-shadow: var(--neon-gold);
+}
+
+/* --- PRODUCT CARDS (LUXURY LOOK) --- */
+#prod-list > div {
+    background: white;
+    border-radius: 40px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+#prod-list img {
+    transition: 0.5s ease;
+}
+
+#prod-list > div:hover img {
+    transform: scale(1.05);
+}
+
+/* --- BUTTONS --- */
+button {
+    transition: 0.3s;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.app-section {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* --- FOOTER --- */
+footer {
+    background: linear-gradient(to bottom, #ffffff, #fafafa);
+}
+
+.hidden {
+    display: none !important;
+}
