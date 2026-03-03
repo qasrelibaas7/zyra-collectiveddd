@@ -1,4 +1,3 @@
-// FIREBASE CONFIG (Aapka original config yahan rahega)
 const firebaseConfig = {
     apiKey: "AIzaSyAY3G265zTP5Qpf9EoGlGy2sSrVYGI4LGk",
     authDomain: "zyracollective.shop",
@@ -11,100 +10,108 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// 42 PRODUCTS DATA (6 Categories x 7 Products)
-const zyraStock = {
-    "Burkha": Array(7).fill(0).map((_, i) => ({ id: `B${i}`, name: `Classic Nida ${i+1}`, price: 1499, rating: 4.8, desc: "Premium Korean Nida fabric with elegant draping." })),
-    "Abaya": Array(7).fill(0).map((_, i) => ({ id: `A${i}`, name: `Luxury Abaya ${i+1}`, price: 2999, rating: 4.9, desc: "Hand-embroidered designer abaya for special occasions." })),
-    "Hijab": Array(7).fill(0).map((_, i) => ({ id: `H${i}`, name: `Chiffon Luxe ${i+1}`, price: 499, rating: 4.7, desc: "Non-slip premium chiffon with soft finish." })),
-    "Kurta": Array(7).fill(0).map((_, i) => ({ id: `K${i}`, name: `Designer Kurta ${i+1}`, price: 1899, rating: 4.8, desc: "Pure cotton hand-stitched kurta for men." })),
-    "Prayer Mat": Array(7).fill(0).map((_, i) => ({ id: `P${i}`, name: `Turkish Sajadah ${i+1}`, price: 1299, rating: 5.0, desc: "Orthopedic foam padded luxury Turkish mat." })),
-    "Attar": Array(7).fill(0).map((_, i) => ({ id: `T${i}`, name: `Oud Royale ${i+1}`, price: 899, rating: 4.9, desc: "Pure alcohol-free concentrated perfume oil." }))
-};
+// 42 Products Array
+const categories = ["Burkha", "Abaya", "Hijab", "Kurta", "Prayer Mat", "Attar"];
+const productData = {};
+categories.forEach(cat => {
+    productData[cat] = Array(7).fill(0).map((_, i) => ({
+        id: `${cat}-${i}`,
+        name: `${cat} Premium Series ${i+1}`,
+        price: "1,499",
+        rating: (4.5 + Math.random() * 0.5).toFixed(1),
+        desc: "Exclusive Zyra Collective design with luxury finishing and premium materials."
+    }));
+});
 
-// HERO SLIDER LOGIC
-let slideIx = 0;
-function runHero() {
+// Slider Animation
+let step = 0;
+function runSlider() {
     const track = document.getElementById('slider-track');
-    const vid = document.getElementById('heroVid');
+    const vid = document.getElementById('h-vid');
     setInterval(() => {
-        slideIx = (slideIx + 1) % 4;
-        track.style.transform = `translateX(-${slideIx * 25}%)`;
-        if(slideIx === 1) vid.play(); else vid.pause();
-    }, 6000);
+        step = (step + 1) % 4;
+        track.style.transform = `translateX(-${step * 25}%)`;
+        if(step === 1) vid.play(); else vid.pause();
+    }, 5000);
 }
 
-// UI RENDERING
-function initHome() {
-    const container = document.getElementById('vertical-cats');
+// Render Categories
+function loadHome() {
+    const container = document.getElementById('cat-container');
     container.innerHTML = '';
-    Object.keys(zyraStock).forEach((cat, idx) => {
+    categories.forEach((cat, i) => {
         container.innerHTML += `
-            <div onclick="loadCategory('${cat}')" class="category-card-vertical relative h-48 rounded-[35px] overflow-hidden group shadow-lg">
-                <img src="images/cat${idx+1}.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                <div class="absolute inset-0 bg-black/30 flex items-center justify-center backdrop-blur-[2px]">
-                    <h4 class="hero-title text-white text-3xl uppercase tracking-tighter italic">${cat}</h4>
+            <div onclick="openCategory('${cat}')" class="cat-card h-56 relative rounded-[40px] overflow-hidden group shadow-lg">
+                <img src="images/cat${i+1}.png" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" onerror="this.src='https://via.placeholder.com/400x200?text=${cat}'">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+                    <h3 class="hero-title text-white text-3xl italic">${cat}</h3>
                 </div>
             </div>`;
     });
 }
 
-function loadCategory(name) {
+function openCategory(cat) {
     showPage('list-page');
-    document.getElementById('current-cat-name').innerText = name;
+    document.getElementById('cat-title-display').innerText = cat;
     const grid = document.getElementById('product-grid');
     grid.innerHTML = '';
-    zyraStock[name].forEach(p => {
+    productData[cat].forEach(p => {
         grid.innerHTML += `
-            <div class="product-3d-card bg-white p-4 rounded-[45px] border border-gray-100 shadow-sm relative group">
-                <div class="absolute top-6 right-6 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-[8px] font-bold text-gold z-10">★ ${p.rating}</div>
-                <img src="images/${name.toLowerCase()}${p.id}.png" class="w-full h-80 object-cover rounded-[35px] mb-6 shadow-inner" onerror="this.src='https://via.placeholder.com/400x500?text=${p.name}'">
-                <div class="px-2">
-                    <h4 class="font-bold text-[12px] uppercase tracking-tighter">${p.name}</h4>
-                    <p class="text-[9px] opacity-40 mt-1 mb-4 leading-tight">${p.desc}</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gold font-bold text-lg">₹${p.price}</span>
-                        <button onclick="alert('Added to Cart')" class="bg-black text-white px-8 py-3 rounded-2xl text-[9px] font-bold uppercase tracking-widest active:scale-90 transition">Buy</button>
-                    </div>
+            <div class="prod-card bg-white p-5 rounded-[50px] border border-gold/5 shadow-sm relative animate-slide-up">
+                <div class="absolute top-8 right-8 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[9px] font-bold text-gold z-10">★ ${p.rating}</div>
+                <img src="images/prod-${p.id}.png" class="w-full h-96 object-cover rounded-[40px] mb-6 shadow-md" onerror="this.src='https://via.placeholder.com/400x500?text=${p.name}'">
+                <h4 class="font-bold text-xs uppercase tracking-tight">${p.name}</h4>
+                <p class="text-[9px] opacity-40 mt-2 mb-6 leading-relaxed">${p.desc}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-xl font-bold text-gold">₹${p.price}</span>
+                    <button onclick="orderWhatsApp('${p.name}')" class="bg-black text-white px-8 py-4 rounded-3xl text-[9px] font-bold uppercase tracking-[3px] active:scale-90 transition">Buy Now</button>
                 </div>
             </div>`;
     });
 }
 
-// NAVIGATION & AUTH
+// Firebase Auth Login
+async function login(type) {
+    const provider = type === 'google' ? new firebase.auth.GoogleAuthProvider() : new firebase.auth.FacebookAuthProvider();
+    try {
+        await auth.signInWithPopup(provider);
+    } catch (err) {
+        if(err.code === 'auth/popup-blocked') await auth.signInWithRedirect(provider);
+        else alert(err.message);
+    }
+}
+
+auth.onAuthStateChanged(user => {
+    const loginUI = document.getElementById('login-ui');
+    const dashUI = document.getElementById('dash-ui');
+    if(user) {
+        loginUI.classList.add('hidden');
+        dashUI.classList.remove('hidden');
+        document.getElementById('u-pic').src = user.photoURL;
+        document.getElementById('u-name').innerText = user.displayName;
+        document.getElementById('u-mail').innerText = user.email;
+    } else {
+        loginUI.classList.remove('hidden');
+        dashUI.classList.add('hidden');
+    }
+});
+
+function orderWhatsApp(item) {
+    const msg = encodeURIComponent(`Hi Zyra Collective, I want to order: ${item}. Please share payment details.`);
+    window.open(`https://wa.me/917385009275?text=${msg}`);
+}
+
 function showPage(id) {
     document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
+    toggleMenu(false);
     window.scrollTo(0,0);
 }
 
 function toggleMenu(open) {
-    document.getElementById('sidebar').classList.toggle('-translate-x-full', !open);
+    document.getElementById('sidebar').style.transform = open ? 'translateX(0)' : 'translateX(-100%)';
     document.getElementById('overlay').classList.toggle('hidden', !open);
+    setTimeout(() => document.getElementById('overlay').style.opacity = open ? '1' : '0', 10);
 }
 
-// Firebase Auth Observer
-auth.onAuthStateChanged(user => {
-    const authUI = document.getElementById('auth-ui');
-    const userDash = document.getElementById('user-dashboard');
-    if(user) {
-        authUI.classList.add('hidden');
-        userDash.classList.remove('hidden');
-        document.getElementById('profilePic').src = user.photoURL || 'https://via.placeholder.com/100';
-        document.getElementById('profileName').innerText = user.displayName || 'Guest User';
-        document.getElementById('profileEmail').innerText = user.email || user.phoneNumber;
-    } else {
-        authUI.classList.remove('hidden');
-        userDash.classList.add('hidden');
-    }
-});
-
-function authAction(type) {
-    let provider;
-    if(type === 'google') provider = new firebase.auth.GoogleAuthProvider();
-    if(type === 'facebook') provider = new firebase.auth.FacebookAuthProvider();
-    
-    if(provider) auth.signInWithPopup(provider);
-    else if(type === 'mobile') alert("Firebase Phone Auth triggered for: " + document.getElementById('mobileInput').value);
-}
-
-window.onload = () => { initHome(); runHero(); };
+window.onload = () => { loadHome(); runSlider(); };
