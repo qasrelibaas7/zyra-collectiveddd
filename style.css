@@ -1,47 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
+:root { --gold: #D4AF37; }
+body { font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+.hero-title { font-family: 'Playfair Display', serif; }
 
-:root { --gold: #D4AF37; --gold-dark: #996515; }
+/* Luxury Marquee */
+@keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+.animate-marquee { display: inline-block; animation: marquee 15s linear infinite; }
 
-body { font-family: 'Montserrat', sans-serif; background: #000; }
-.font-serif { font-family: 'Cinzel', serif; }
+/* High-End Animations */
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+.animate-slide { animation: slideUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
 
-.glass-effect {
-    background: rgba(15, 15, 15, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+@keyframes scaleUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+.animate-scale-up { animation: scaleUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+.view { transition: 0.5s ease; }
+.view.hidden { display: none; }
+
+/* 3D Glass Cards */
+.cat-card, .prod-card {
+    transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+.cat-card:active { transform: scale(0.95); }
 
-.text-gold-glow {
-    color: var(--gold);
-    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-}
+/* Custom Buttons */
+button { transition: 0.4s; }
+button:active { transform: scale(0.97); }
 
-/* Luxury Product Cards */
-.product-card {
-    background: linear-gradient(145deg, #111, #050505);
-    border: 1px solid rgba(212, 175, 55, 0.1);
-    transition: all 0.4s ease;
-}
+.text-gold { color: var(--gold); }
+.border-gold { border-color: var(--gold); }
 
-.product-card:hover {
-    border-color: var(--gold);
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
-}
-
-/* Status Badges */
-.status-badge {
-    padding: 4px 12px;
-    border-radius: 50px;
-    font-size: 10px;
-    font-weight: bold;
-    border: 1px solid var(--gold);
-    box-shadow: 0 0 10px var(--gold);
-}
-
-/* Navigation Active State */
-.nav-btn.active { color: var(--gold); filter: drop-shadow(0 0 5px var(--gold)); }
-
-/* Animations */
-.slide-up { animation: slideUp 1s ease forwards; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+/* Hide Scrollbar */
+::-webkit-scrollbar { display: none; }
