@@ -1,47 +1,60 @@
-:root { --gold: #D4AF37; }
-body { font-family: 'Montserrat', sans-serif; }
-.hero-title { font-family: 'Playfair Display', serif; }
-
-.auth-btn {
-    width: 100%;
-    padding: 20px;
-    border-radius: 25px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
+:root { 
+  --gold: #D4AF37; 
 }
 
-.menu-link {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    opacity: 0.3;
-    cursor: pointer;
-    transition: 0.4s;
+body { 
+  font-family: 'Montserrat', sans-serif; 
+  background: #fff; 
+  color: #1a1a1a; 
+  margin: 0; 
+  overflow-x: hidden; 
 }
-.menu-link:hover { opacity: 1; color: var(--gold); transform: translateX(10px); }
 
-.nav-icon { font-size: 18px; color: #e0e0e0; transition: 0.3s; cursor: pointer; }
-.nav-icon.active { color: var(--gold); transform: translateY(-5px); filter: drop-shadow(0 5px 10px rgba(212,175,55,0.3)); }
-
-.prod-card {
-    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.hero-title { 
+  font-family: 'Playfair Display', serif; 
 }
-.prod-card:active { transform: scale(0.95) rotateX(10deg); }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(50px); }
-    to { opacity: 1; transform: translateY(0); }
+.text-gold { 
+  color: var(--gold); 
 }
-.animate-slide-up { animation: slideUp 0.8s ease forwards; }
 
-.page-view { animation: slideUp 0.6s ease-out; }
+.bg-gold { 
+  background-color: var(--gold); 
+}
 
-/* Scrollbar Hide */
-::-webkit-scrollbar { display: none; }
+.border-gold { 
+  border-color: var(--gold); 
+}
+
+.hidden { 
+  display: none !important; 
+}
+
+.sidebar { 
+  transition: 0.4s; 
+  transform: translateX(-100%); 
+  z-index: 2000; 
+  position: fixed; 
+  inset: 0; 
+  width: 280px; 
+}
+
+.sidebar.active { 
+  transform: translateX(0); 
+}
+
+.overlay { 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(0,0,0,0.4); 
+  z-index: 1500; 
+  display: none; 
+}
+
+.overlay.active { 
+  display: block; 
+}
+
+.app-section { 
+  min-height: 80vh; 
+}
