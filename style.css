@@ -1,39 +1,47 @@
 :root { --gold: #D4AF37; }
-body { font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Montserrat', sans-serif; }
 .hero-title { font-family: 'Playfair Display', serif; }
 
-/* 3D Glassmorphism Cards */
-.product-3d-card {
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-style: preserve-3d;
-}
-.product-3d-card:active {
-    transform: scale(0.96) rotateX(5deg);
-}
-
-/* Vertical Category Animation */
-.category-card-vertical {
-    transition: transform 0.6s ease;
-}
-.category-card-vertical:hover h4 {
-    letter-spacing: 8px;
-    transition: 0.8s;
+.auth-btn {
+    width: 100%;
+    padding: 20px;
+    border-radius: 25px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
 }
 
-/* Nav Glow Effect */
-.nav-btn.active {
-    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+.menu-link {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    opacity: 0.3;
+    cursor: pointer;
+    transition: 0.4s;
 }
+.menu-link:hover { opacity: 1; color: var(--gold); transform: translateX(10px); }
 
-/* Smooth Fade */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+.nav-icon { font-size: 18px; color: #e0e0e0; transition: 0.3s; cursor: pointer; }
+.nav-icon.active { color: var(--gold); transform: translateY(-5px); filter: drop-shadow(0 5px 10px rgba(212,175,55,0.3)); }
+
+.prod-card {
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.prod-card:active { transform: scale(0.95) rotateX(10deg); }
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(50px); }
     to { opacity: 1; transform: translateY(0); }
 }
-.page-view { animation: fadeIn 0.6s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.8s ease forwards; }
 
-/* Bottom Nav Glass */
-nav.fixed {
-    border-radius: 40px 40px 0 0;
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.03);
-}
+.page-view { animation: slideUp 0.6s ease-out; }
+
+/* Scrollbar Hide */
+::-webkit-scrollbar { display: none; }
