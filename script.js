@@ -1,130 +1,175 @@
 const firebaseConfig = {
     apiKey: "AIzaSyAY3G265zTP5Qpf9EoGlGy2sSrVYGI4LGk",
-    authDomain: "genzfood2-96e43.firebaseapp.com",
-    databaseURL: "https://genzfood2-96e43-default-rtdb.firebaseio.com",
+    authDomain: "zyracollective.shop", 
     projectId: "genzfood2-96e43",
     storageBucket: "genzfood2-96e43.firebasestorage.app",
     messagingSenderId: "410241064931",
     appId: "1:410241064931:web:a9dcb7f9401d22b2a30ad6"
 };
+
 firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 const auth = firebase.auth();
+let user = null;
+let currentItem = null;
 
-// 42 Products Structure (6 Categories x 7 Products)
-const categories = ["Burkha", "Hijab", "Abaya", "Kurta", "Attar", "Prayermat"];
-const inventory = {};
+// ALL 7 PRODUCTS PER CATEGORY RESTORED
+const productsData = {
+    "Burkha": [
+        { name: "Classic Nida", price: "499" }, { name: "Lace Luxe", price: "499" }, { name: "Stone Work", price: "499" },
+        { name: "Premium Dubai", price: "499" }, { name: "Daily Wear", price: "499" }, { name: "Party Wear", price: "499" }, { name: "Zari Work", price: "499" }
+    ],
+    "Abaya": [
+        { name: "A-Line Cut", price: "499" }, { name: "Kimono Style", price: "499" }, { name: "Open Front", price: "499" },
+        { name: "Butterfly", price: "499" }, { name: "Coat Style", price: "499" }, { name: "Classic Black", price: "499" }, { name: "Modest Fit", price: "499" }
+    ],
+    "Hijab": [
+        { name: "Chiffon Soft", price: "499" }, { name: "Premium Jersey", price: "499" }, { name: "Cotton Silk", price: "499" },
+        { name: "Crinkle", price: "499" }, { name: "Satin Silk", price: "499" }, { name: "Georgette", price: "499" }, { name: "Modal", price: "499" }
+    ],
+    "Kurta": [
+        { name: "Floral Print", price: "499" }, { name: "Casual Linen", price: "499" }, { name: "Cotton Blend", price: "499" },
+        { name: "Embroidered", price: "499" }, { name: "Straight Cut", price: "499" }, { name: "Anarkali", price: "499" }, { name: "Office Wear", price: "499" }
+    ],
+    "Prayer Mat": [
+        { name: "Turkish Padded", price: "499" }, { name: "Velvet Mat", price: "499" }, { name: "Foam Base", price: "499" },
+        { name: "Travel Foldable", price: "499" }, { name: "Sajadah Lux", price: "499" }, { name: "Kids Mat", price: "499" }, { name: "Classic Red", price: "499" }
+    ],
+    "Attar": [
+        { name: "Oud Al-Layl", price: "499" }, { name: "White Musk", price: "499" }, { name: "Rose Sandal", price: "499" },
+        { name: "Majmua", price: "499" }, { name: "Amber", price: "499" }, { name: "Jasmine", price: "499" }, { name: "Mogra", price: "499" }
+    ]
+};
 
-categories.forEach((cat, idx) => {
-    inventory[cat] = Array.from({length: 7}, (_, i) => ({
-        id: `${cat.toLowerCase()}${i+1}`,
-        name: `Luxury ${cat} - Edition ${i+1}`,
-        price: 2499 + (i * 150),
-        desc: "Handcrafted with premium fabrics and gold-thread embroidery for a regal finish.",
-        img: `images/${cat.toLowerCase()}${i+1}.png`
-    }));
-});
-
-// Auto Slider (3s Interval)
-let slideIdx = 0;
-function startHero() {
-    const track = document.getElementById('slider-track');
-    const vid = document.getElementById('hero-vid');
+// AUTO SLIDER LOGIC
+let slideIndex = 0;
+function startSlider() {
+    const slider = document.getElementById('slider-container');
+    if(!slider) return;
     setInterval(() => {
-        slideIdx = (slideIdx + 1) % 4;
-        track.style.transform = `translateX(-${slideIdx * 25}%)`;
-        if(slideIdx === 1) vid.play(); else vid.pause();
+        slideIndex++;
+        if(slideIndex >= 3) slideIndex = 0;
+        slider.style.transform = `translateX(-${(slideIndex * 100) / 3}%)`;
     }, 3000);
 }
 
 function initHome() {
-    const list = document.getElementById('category-list');
-    if (!list) {
-        console.error("Error: 'category-list' ID nahi mili HTML mein!");
-        return;
-    }
-    list.innerHTML = ''; 
-    categories.forEach((cat, i) => {
-        const imgPath = `images/category${i+1}.png`;
-        console.log("Loading Category:", cat, "with image:", imgPath);
-        list.innerHTML += `
-            <div onclick="openCategory('${cat}')" class="cat-card h-52 relative rounded-[45px] overflow-hidden shadow-lg animate-slide" style="margin-bottom: 20px; display: block;">
-                <img src="${imgPath}" class="w-full h-full object-cover" onerror="console.log('Image Load Failed: ${imgPath}')">
-                <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
-                    <h4 class="hero-title text-white text-3xl italic">${cat}</h4>
-                </div>
-            </div>`;
-    });
-}
-
-
-function openCategory(cat) {
-    showSection('list-page');
-    document.getElementById('current-cat-name').innerText = cat;
-    const grid = document.getElementById('product-grid');
+    const grid = document.getElementById('category-grid');
+    if(!grid) return;
     grid.innerHTML = '';
-    inventory[cat].forEach(p => {
+    Object.keys(productsData).forEach((cat, index) => {
+        const catImg = `images/category${index + 1}.png`; 
         grid.innerHTML += `
-            <div class="prod-card bg-white p-6 rounded-[50px] border border-[#D4AF37]/10 shadow-sm animate-slide">
-                <img src="${p.img}" class="w-full h-80 object-cover rounded-[40px] mb-6 shadow-md" onerror="this.src='https://via.placeholder.com/400x500?text=${p.name}'">
-                <h4 class="font-bold text-[11px] uppercase tracking-tighter">${p.name}</h4>
-                <p class="text-[9px] opacity-40 mt-1 mb-6 italic">${p.desc}</p>
-                <div class="flex justify-between items-center">
-                    <span class="text-xl font-bold text-[#D4AF37]">₹${p.price}</span>
-                    <button onclick="triggerCheckout('${p.name}')" class="bg-black text-white px-10 py-4 rounded-[30px] text-[10px] font-bold uppercase tracking-[3px]">Order</button>
-                </div>
+            <div onclick="openCat('${cat}')" class="bg-gray-50 p-2 rounded-3xl border text-center cursor-pointer shadow-sm transform active:scale-95 transition">
+                <img src="${catImg}" class="h-44 w-full object-cover rounded-2xl" onerror="this.src='https://via.placeholder.com/300?text=${cat}'">
+                <p class="mt-2 text-[10px] font-bold uppercase tracking-[2px] text-gray-600">${cat}</p>
             </div>`;
     });
 }
 
-// Policies & FAQs
-const data = {
-    "Privacy": "Zyra Collective protects your data. We use encryption for all luxury transactions and never share your details.",
-    "Return": "Exchanges available within 14 days for unworn items with original tags. Hygiene products like Attar are non-returnable.",
-    "FAQ": "1. Shipping? 3-7 days PAN India. <br>2. Fabric? Premium Korean Nida & Egyptian Cotton. <br>3. Tracking? Sent via WhatsApp after dispatch. <br>4. Customization? Available on specific Abayas. <br>5. Payment? Secure UPI and COD accepted."
-};
-
-function showPolicy(type) {
-    alert(`${type} Policy:\n\n${data[type].replace('<br>', '\n')}`);
-}
-
-function triggerCheckout(name) {
-    document.getElementById('checkout-prod-name').value = name;
-    document.getElementById('checkout-modal').classList.remove('hidden');
-}
-
-function toggleQR(show) {
-    document.getElementById('upi-qr').classList.toggle('hidden', !show);
-}
-
-function showSection(id) {
-    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+function showSection(id, type) {
+    if((id === 'checkout-page' || id === 'orders-page') && !user) { handleAuth(); return; }
+    document.querySelectorAll('.app-section').forEach(s => s.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
-    toggleSidebar(false);
+    if(id === 'orders-page') fetchOrders();
     window.scrollTo(0,0);
+    toggleSidebar(false);
 }
 
-function toggleSidebar(open) {
-    document.getElementById('sidebar').style.transform = open ? 'translateX(0)' : 'translateX(-100%)';
-    document.getElementById('overlay').classList.toggle('hidden', !open);
-}
-
-// Authentication Logic
-async function loginWithGoogle() {
+function handleAuth() {
     const provider = new firebase.auth.GoogleAuthProvider();
-    await auth.signInWithPopup(provider).catch(e => alert("Login Error: " + e.message));
+    auth.signInWithPopup(provider).catch(err => {
+        if(err.code === 'auth/popup-blocked') auth.signInWithRedirect(provider);
+        else alert(err.message);
+    });
 }
 
-auth.onAuthStateChanged(user => {
-    if(user) {
-        document.getElementById('auth-ui').classList.add('hidden');
-        document.getElementById('user-ui').classList.remove('hidden');
-        document.getElementById('user-img').src = user.photoURL;
-        document.getElementById('user-name').innerText = user.displayName;
-        document.getElementById('user-email').innerText = user.email;
-    } else {
-        document.getElementById('auth-ui').classList.remove('hidden');
-        document.getElementById('user-ui').classList.add('hidden');
+auth.onAuthStateChanged(u => {
+    user = u;
+    if(u) {
+        document.getElementById('top-auth').innerHTML = `<img src="${u.photoURL}" class="w-8 h-8 rounded-full border border-gold">`;
+        document.getElementById('u-img').src = u.photoURL;
+        document.getElementById('u-name').innerText = u.displayName;
+        document.getElementById('u-email').innerText = u.email;
+        document.getElementById('cust-name').value = u.displayName;
+        document.getElementById('auth-btn').innerText = "Sign Out";
+        document.getElementById('auth-btn').onclick = () => auth.signOut().then(() => location.reload());
     }
 });
 
-window.onload = () => { initHome(); startHero(); };
+function openCat(name) {
+    showSection('product-view');
+    document.getElementById('cat-title').innerText = name;
+    const list = document.getElementById('prod-list');
+    list.innerHTML = '';
+    const folderName = name.toLowerCase().replace(/\s/g, '');
+    productsData[name].forEach((item, i) => {
+        const pImg = `images/${folderName}${i + 1}.png`; 
+        list.innerHTML += `
+        <div class="bg-white p-4 rounded-[40px] border shadow-sm">
+            <img src="${pImg}" class="w-full h-80 object-cover rounded-[30px]" onerror="this.src='https://via.placeholder.com/400?text=${item.name}'">
+            <div class="mt-4 flex justify-between items-center px-2">
+                <div><h4 class="font-bold text-[11px] uppercase tracking-tighter">${item.name}</h4><p class="text-gold font-bold">₹${item.price}</p></div>
+                <button onclick="startCheckout('${item.name}', '₹${item.price}')" class="bg-black text-white px-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest">Buy Now</button>
+            </div>
+        </div>`;
+    });
+}
+
+function startCheckout(name, price) {
+    currentItem = { name, price };
+    showSection('checkout-page');
+    document.getElementById('item-summary').innerHTML = `<h4 class="font-bold">${name}</h4><p class="text-gold font-bold">${price}</p>`;
+}
+
+document.getElementById('order-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('order-btn');
+    btn.innerText = "Processing...";
+    const data = {
+        Name: document.getElementById('cust-name').value,
+        Email: user.email,
+        Phone: document.getElementById('cust-phone').value,
+        Address: document.getElementById('cust-address').value,
+        Payment: document.querySelector('input[name="pay-method"]:checked').value,
+        Item: currentItem.name,
+        Price: currentItem.price,
+        Date: new Date().toLocaleString()
+    };
+    try {
+        await db.collection("orders").add(data);
+        alert("✨ Order Placed Successfully!");
+        showSection('orders-page');
+    } catch (err) { alert(err.message); }
+    btn.innerText = "Place Order";
+});
+
+async function fetchOrders() {
+    const list = document.getElementById('order-list');
+    if(!user) return;
+    list.innerHTML = '<p class="text-center opacity-30 py-10">Searching...</p>';
+    const snap = await db.collection("orders").where("Email", "==", user.email).get();
+    list.innerHTML = '';
+    if(snap.empty) { list.innerHTML = '<p class="text-center py-20 opacity-30">No orders found.</p>'; return; }
+    snap.forEach(doc => {
+        const d = doc.data();
+        list.innerHTML += `<div class="p-5 bg-white border rounded-[30px] mb-4 shadow-sm">
+            <div class="flex justify-between"><span class="text-[8px] bg-gold/10 text-gold px-2 py-1 rounded-full font-bold uppercase">${d.Payment}</span><p class="text-[8px] opacity-40">${d.Date}</p></div>
+            <h4 class="font-bold text-sm uppercase mt-2">${d.Item}</h4>
+            <p class="text-gold font-bold">${d.Price}</p>
+        </div>`;
+    });
+}
+
+function toggleSidebar(f) {
+    document.getElementById('sidebar').classList.toggle('active', f);
+    document.getElementById('overlay').classList.toggle('active', f);
+}
+
+function toggleQR(show) { document.getElementById('qr-section').classList.toggle('hidden', !show); }
+
+// INIT APP
+window.onload = () => {
+    initHome();
+    startSlider();
+};
