@@ -36,20 +36,26 @@ function startHero() {
     }, 3000);
 }
 
-// Render Categories
 function initHome() {
     const list = document.getElementById('category-list');
-    list.innerHTML = '';
+    if (!list) {
+        console.error("Error: 'category-list' ID nahi mili HTML mein!");
+        return;
+    }
+    list.innerHTML = ''; 
     categories.forEach((cat, i) => {
+        const imgPath = `images/category${i+1}.png`;
+        console.log("Loading Category:", cat, "with image:", imgPath);
         list.innerHTML += `
-            <div onclick="openCategory('${cat}')" class="cat-card h-52 relative rounded-[45px] overflow-hidden group shadow-lg animate-slide">
-                <img src="images/category${i+1}.png" class="w-full h-full object-cover transition duration-1000 group-hover:scale-110">
-                <div class="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex items-center justify-center">
-                    <h4 class="hero-title text-white text-3xl italic tracking-tighter">${cat}</h4>
+            <div onclick="openCategory('${cat}')" class="cat-card h-52 relative rounded-[45px] overflow-hidden shadow-lg animate-slide" style="margin-bottom: 20px; display: block;">
+                <img src="${imgPath}" class="w-full h-full object-cover" onerror="console.log('Image Load Failed: ${imgPath}')">
+                <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                    <h4 class="hero-title text-white text-3xl italic">${cat}</h4>
                 </div>
             </div>`;
     });
 }
+
 
 function openCategory(cat) {
     showSection('list-page');
